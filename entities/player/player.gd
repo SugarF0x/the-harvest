@@ -3,10 +3,13 @@ extends CharacterBody3D
 
 const SPEED := 5.0
 const JUMP_VELOCITY := 4.5
-const sensitivity := 0.3
+const SENSITIVITY := 0.3
+const CAMERA_PAN_CLAMP := 0.1
 
 var camera_distance := 3.0
 var camera_elevation := 3.5
+var camera_pan := 1
+
 var prev_mouse_position := Vector2()
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -14,36 +17,9 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var body = $Body
 
 func _input(event):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
-		if event.pressed: 
-			prev_mouse_position = get_viewport().get_mouse_position()
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		else: 
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			get_viewport().warp_mouse(prev_mouse_position)
-
-	elif event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-		var mouse_delta = event.relative
-		rotate_y(deg_to_rad(-mouse_delta.x * sensitivity))
-	
-	if event is InputEventMouseMotion:
-		# Get the mouse position in the viewport
-		var mouse_position = event.position
-
-		# Convert the mouse position to a ray in world space
-		var from = camera_3d.project_ray_origin(mouse_position)
-		var to = camera_3d.project_ray_normal(mouse_position) * 1000
-		
-		var parameters = PhysicsRayQueryParameters3D.new()
-		parameters.from = from
-		parameters.to = to
-		parameters.collision_mask = 1
-		var result = get_world_3d().direct_space_state.intersect_ray(parameters)
-#
-		if result: 
-			var pos = result.position
-			pos[1] = position[1]
-			body.look_at(pos)
+	handle_mouse_controls(event)
+	handle_camera_movement(event)
+	handle_mouse_follow(event)
 
 func _physics_process(delta):
 	if not is_on_floor(): velocity.y -= gravity * delta
@@ -60,3 +36,42 @@ func _physics_process(delta):
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+
+
+func handle_mouse_controls(event: InputEvent):
+	if not event is InputEventMouseButton: return
+	if event.button_index != MOUSE_BUTTON_RIGHT: return
+	
+	if event.pressed: 
+		prev_mouse_position = get_viewport().get_mouse_position()
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	else: 
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		get_viewport().warp_mouse(prev_mouse_position)
+
+func handle_camera_movement(event: InputEvent):
+	if not event is InputEventMouseMotion: return
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT): return
+	
+	var mouse_delta = event.relative
+	rotate_y(deg_to_rad(-mouse_delta.x * SENSITIVITY))
+	
+func handle_mouse_follow(event: InputEvent):
+	if not event is InputEventMouseMotion: return
+	# Get the mouse position in the viewport
+	var mouse_position = event.position
+
+	# Convert the mouse position to a ray in world space
+	var from = camera_3d.project_ray_origin(mouse_position)
+	var to = camera_3d.project_ray_normal(mouse_position) * 1000
+	
+	var parameters = PhysicsRayQueryParameters3D.new()
+	parameters.from = from
+	parameters.to = to
+	parameters.collision_mask = 1
+	var result = get_world_3d().direct_space_state.intersect_ray(parameters)
+#
+	if result: 
+		var pos = result.position
+		pos[1] = position[1]
+		body.look_at(pos)
