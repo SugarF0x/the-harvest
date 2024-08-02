@@ -13,13 +13,14 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera_3d = $Camera3D
 @onready var body = $Body
 
-func _ready():
-	prev_mouse_position = get_viewport().get_mouse_position()
-
 func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
-		if event.pressed: Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		else: Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		if event.pressed: 
+			prev_mouse_position = get_viewport().get_mouse_position()
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		else: 
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			get_viewport().warp_mouse(prev_mouse_position)
 
 	elif event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		var mouse_delta = event.relative
