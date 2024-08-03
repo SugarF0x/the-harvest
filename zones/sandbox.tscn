@@ -83,3 +83,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.6131, 0.354134, 18.6101)
 
 [node name="Rock1" parent="Walls" instance=ExtResource("5_e7ul8")]
 transform = Transform3D(10.135, 0, 0, 0, 10.135, 0, 0, 0, 10.135, -50.2358, 0, 0.0886536)
+
+[node name="Rock2" parent="Walls" instance=ExtResource("5_e7ul8")]
+transform = Transform3D(5.48962, -2.70359e-08, 8.51953, 1.08091, 10.0531, -0.696491, -8.45068, 1.28587, 5.44526, -50.2358, 2.08374, 8.45952)
+
+[node name="Rock3" parent="Walls" instance=ExtResource("5_e7ul8")]
+transform = Transform3D(-0.748379, 0.778633, 10.0773, 1.08091, 10.0531, -0.696491, -10.0494, 1.02332, -0.825373, -50.2358, -0.640158, 16.7868)
+
+[node name="Rock4" parent="Walls" instance=ExtResource("5_e7ul8")]
+transform = Transform3D(-9.49584, 0.78163, -3.45492, 2.40924, 8.67173, -4.65992, 2.59672, -5.18732, -8.31066, -50.2358, -0.640158, 25.3512)
