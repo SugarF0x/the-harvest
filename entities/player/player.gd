@@ -5,10 +5,8 @@ const SPEED := 5.0
 const JUMP_VELOCITY := 4.5
 const SENSITIVITY := 0.3
 const CAMERA_PAN_CLAMP := 10.0
-
-var camera_distance := 3.0
-var camera_elevation := 3.5
-var camera_pan := 0.0
+const CAMERA_MAX_ZOOM = 2.0
+const CAMERA_MIN_ZOOM = 5.0
 
 var prev_mouse_position := Vector2()
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -16,6 +14,8 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera_3d = $Camera3D
 @onready var body = $Body
 @onready var initial_pan = rad_to_deg(camera_3d.rotation.x)
+@onready var min_camera_position = body.position.direction_to(camera_3d.position) * CAMERA_MIN_ZOOM
+@onready var max_camera_position = body.position.direction_to(camera_3d.position) * CAMERA_MAX_ZOOM
 
 func _input(event):
 	handle_mouse_controls(event)
@@ -65,6 +65,9 @@ func handle_camera_zoom(event: InputEvent):
 	var direction = 0
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP): direction = 1
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN): direction = -1
+	if !direction: return
+	
+	camera_3d.position = (camera_3d.position + camera_3d.position.direction_to(body.position) * direction).clamp(max_camera_position, min_camera_position)
 
 func handle_mouse_follow(event: InputEvent):
 	if not event is InputEventMouseMotion: return
