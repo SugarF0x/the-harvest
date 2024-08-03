@@ -1,0 +1,65 @@
+[gd_resource type="VisualShader" load_steps=7 format=3 uid="uid://bod0200m8nx37"]
+
+[sub_resource type="VisualShaderNodeColorConstant" id="VisualShaderNodeColorConstant_srvyl"]
+constant = Color(0.0231283, 0.108139, 0.0207852, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_gwfvf"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ttevg"]
+noise = SubResource("FastNoiseLite_gwfvf")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_7btfp"]
+output_port_for_preview = 0
+expanded_output_ports = [0]
+texture = SubResource("NoiseTexture2D_ttevg")
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_415eo"]
+output_port_for_preview = 0
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_iip60"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(0.5, 0.5, 0.5)]
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform sampler2D tex_frg_7;
+
+
+
+void fragment() {
+// ColorConstant:2
+	vec4 n_out2p0 = vec4(0.023128, 0.108139, 0.020785, 1.000000);
+
+
+// Texture2D:7
+	vec4 n_out7p0 = texture(tex_frg_7, UV);
+
+
+// VectorOp:9
+	vec3 n_in9p1 = vec3(0.50000, 0.50000, 0.50000);
+	vec3 n_out9p0 = vec3(n_out7p0.xyz) + n_in9p1;
+
+
+// VectorOp:8
+	vec3 n_out8p0 = vec3(n_out2p0.xyz) * n_out9p0;
+
+
+// Output:0
+	ALBEDO = n_out8p0;
+
+
+}
+"
+graph_offset = Vector2(-572.062, -200.677)
+nodes/fragment/0/position = Vector2(680, -60)
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorConstant_srvyl")
+nodes/fragment/2/position = Vector2(100, -160)
+nodes/fragment/7/node = SubResource("VisualShaderNodeTexture_7btfp")
+nodes/fragment/7/position = Vector2(-300, -160)
+nodes/fragment/8/node = SubResource("VisualShaderNodeVectorOp_415eo")
+nodes/fragment/8/position = Vector2(340, -160)
+nodes/fragment/9/node = SubResource("VisualShaderNodeVectorOp_iip60")
+nodes/fragment/9/position = Vector2(80, -40)
+nodes/fragment/connections = PackedInt32Array(8, 0, 0, 0, 2, 0, 8, 0, 7, 0, 9, 0, 9, 0, 8, 1)

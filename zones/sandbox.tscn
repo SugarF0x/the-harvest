@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cm3ushrgletac"]
+[gd_scene load_steps=9 format=3 uid="uid://cm3ushrgletac"]
 
 [ext_resource type="Script" path="res://zones/sandbox.gd" id="1_itskw"]
 [ext_resource type="PackedScene" uid="uid://bb5n570m33wfc" path="res://entities/player/player.tscn" id="1_qt5su"]
+[ext_resource type="Shader" uid="uid://bod0200m8nx37" path="res://zones/sandbox.tres" id="2_0q3wb"]
 [ext_resource type="PackedScene" uid="uid://bd2qde8tp8mfk" path="res://entities/resources/tree/tree.tscn" id="2_6rah6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wglka"]
@@ -17,7 +18,9 @@ sky = SubResource("Sky_gwq2r")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k5exn"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o1ejd"]
+render_priority = 0
+shader = ExtResource("2_0q3wb")
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_itskw")
@@ -32,7 +35,7 @@ shadow_enabled = true
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 use_collision = true
 size = Vector3(50, 1, 50)
-material = SubResource("StandardMaterial3D_k5exn")
+material = SubResource("ShaderMaterial_o1ejd")
 
 [node name="Player" parent="." instance=ExtResource("1_qt5su")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
