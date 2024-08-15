@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://bakf5lco7s4yl"]
+
+[ext_resource type="Script" path="res://models/item.gd" id="1_178dt"]
+[ext_resource type="Texture2D" uid="uid://bey7fmnqxnqin" path="res://assets/images/stone.png" id="1_skkbf"]
+
+[resource]
+script = ExtResource("1_178dt")
+name = "Rock"
+stack_size = 50
+weight = 25
+image = ExtResource("1_skkbf")
